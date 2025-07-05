@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><title>Delivery Status</title>
+  <style>
+    body{
+      font-family:Segoe UI;
+      background:linear-gradient(135deg,#f9c8ff,#ffe58e);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      margin:0
+    }
+    .card{
+      background:#fff;
+      padding:30px 40px;
+      border-radius:15px;
+      box-shadow:0 8px 16px rgba(0,0,0,.15);
+      max-width:400px
+    }
+    h2{
+      color:#a600bf;
+      margin-top:0
+    }
+    p{
+      margin:8px 0
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Delivery #{{ delivery.id }}</h2>
+    <p><strong>Pickup:</strong> {{ delivery.pickup_address }}</p>
+    <p><strong>Drop‑off:</strong> {{ delivery.dropoff_address }}</p>
+    <p><strong>Status:</strong> {{ delivery.status|title }}</p>
+    <p><small>Last&nbsp;Updated: {{ delivery.updated_at|default:delivery.created_at|date:"Y-m-d H:i" }}</small></p>
+    <a href="{% url 'customer_deliveries' %}">← Back</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f9c8ff, #ffe58e);
+      padding: 40px;
+      margin: 0;
+    }
+    .profile-container {
+      background: white;
+      max-width: 700px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    }
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #a600bf;
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    h2 {
+      color: #a600bf;
+      margin: 0;
+    }
+    .info {
+      font-size: 15px;
+      color: #444;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background: #ffe1ff;
+    }
+    tr:nth-child(even) {
+      background: #fff5ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <div class="profile-header">
+      <img src="{% static 'path/to/avatar.png' %}" class="avatar" alt="Avatar">
+      <div>
+        <h2>{{ request.user.username }}</h2>
+        <p class="info">{{ request.user.email }}</p>
+        <p class="info">Role: {{ request.user.role|title }}</p>
+        {% if avg_rating %}
+          <p class="info">⭐ Avg Rating: {{ avg_rating }}/5</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <h3>My Deliveries</h3>
+    {% if deliveries %}
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Customer</th>
+        {% if request.user.role == 'driver' %}
+          <th>Feedback</th>
+        {% endif %}
+        <th>Date</th>
+      </tr>
+      {% for delivery in deliveries %}
+      <tr>
+        <td>{{ delivery.id }}</td>
+        <td>{{ delivery.status }}</td>
+        <td>{{ delivery.customer.username }}</td>
+        {% if request.user.role == 'driver' %}
+          <td>
+            {% for fb in feedbacks %}
+              {% if fb.delivery.id == delivery.id %}
+                {{ fb.rating }}★ - {{ fb.comment }}
+              {% endif %}
+            {% endfor %}
+          </td>
+        {% endif %}
+        <td>{{ delivery.created_at|date:"Y-m-d H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>No deliveries found.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

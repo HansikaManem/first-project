@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Delivery</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f9c8ff, #ffe58e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 50px;
+      margin: 0;
+    }
+
+    .form-container {
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #a600bf;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+      transition: border 0.3s;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #a600bf;
+    }
+
+    .btn-submit {
+      background-color: #a600bf;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      margin-top: 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-submit:hover {
+      background-color: #8c00a9;
+    }
+
+    .errorlist {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Edit Delivery</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <label for="id_pickup_address">Pickup Address</label>
+      {{ form.pickup_address }}
+      {% if form.pickup_address.errors %}
+        <div class="errorlist">{{ form.pickup_address.errors|striptags }}</div>
+      {% endif %}
+
+      <label for="id_dropoff_address">Dropoff Address</label>
+      {{ form.dropoff_address }}
+      {% if form.dropoff_address.errors %}
+        <div class="errorlist">{{ form.dropoff_address.errors|striptags }}</div>
+      {% endif %}
+
+      <label for="id_package_note">Package Note</label>
+      {{ form.package_note }}
+      {% if form.package_note.errors %}
+        <div class="errorlist">{{ form.package_note.errors|striptags }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn-submit">Save Changes</button>
+    </form>
+  </div>
+</body>
+</html>

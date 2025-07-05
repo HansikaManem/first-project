@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Driver Profile</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f9c8ff, #ffe58e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .profile-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #a600bf;
+    }
+
+    .profile-header h2 {
+      margin-top: 10px;
+      color: #a600bf;
+    }
+
+    .profile-header p {
+      margin: 5px 0;
+      color: #333;
+    }
+
+    .rating {
+      font-size: 18px;
+      color: #555;
+      margin-top: 10px;
+    }
+
+    h3 {
+      color: #a600bf;
+      margin-top: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #ffe1ff;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fff5ff;
+    }
+
+    .feedback {
+      color: #555;
+      font-size: 14px;
+    }
+
+    .edit-btn {
+      display: inline-block;
+      background-color: #a600bf;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      margin-top: 10px;
+    }
+
+    .edit-btn:hover {
+      background-color: #8c00a9;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="profile-header">
+      {% if request.user.profile.profile_picture %}
+        <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile Picture">
+      {% else %}
+        <img src="{% static 'default_avatar.png' %}" alt="Default Avatar">
+      {% endif %}
+      <h2>{{ request.user.username }}</h2>
+      <p>Email: {{ request.user.email }}</p>
+      <p>Phone: {{ request.user.profile.phone }}</p>
+
+      <a href="{% url 'edit_driver_profile' %}" class="edit-btn">Edit Profile</a>
+
+      <div class="rating">
+        ⭐ Average Rating: {{ avg_rating|default:"N/A" }}
+      </div>
+    </div>
+
+    <h3>Completed Deliveries</h3>
+    {% if deliveries %}
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Pickup</th>
+        <th>Dropoff</th>
+        <th>Completed On</th>
+        <th>Rating</th>
+        <th>Feedback</th>
+      </tr>
+      {% for delivery in deliveries %}
+        <tr>
+          <td>{{ delivery.id }}</td>
+          <td>{{ delivery.customer.username }}</td>
+          <td>{{ delivery.pickup_address }}</td>
+          <td>{{ delivery.dropoff_address }}</td>
+          <td>{{ delivery.created_at|date:"Y-m-d H:i" }}</td>
+          <td>
+            {% with feedback=delivery.feedback_set.first %}
+              {% if feedback %}
+                {{ feedback.rating }}/5
+              {% else %}
+                —
+              {% endif %}
+            {% endwith %}
+          </td>
+          <td class="feedback">
+            {% with feedback=delivery.feedback_set.first %}
+              {% if feedback and feedback.comment %}
+                {{ feedback.comment }}
+              {% else %}
+                —
+              {% endif %}
+            {% endwith %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>No completed deliveries yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

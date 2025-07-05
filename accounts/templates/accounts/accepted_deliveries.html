@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Accepted Deliveries</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f9c8ff, #ffe58e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #a600bf;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #ffe1ff;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fff5ff;
+    }
+
+    .btn-complete {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin-left: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .btn-complete:hover {
+      background-color: #218838;
+    }
+
+    .btn-status {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin-left: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .btn-status:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Accepted Deliveries</h1>
+
+    {% if deliveries %}
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Address</th>
+          <th>Details</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        {% for delivery in deliveries %}
+        <tr>
+          <td>{{ delivery.id }}</td>
+          <td>{{ delivery.customer.username }}</td>
+          <td>{{ delivery.address }}</td>
+          <td>{{ delivery.package_details }}</td>
+          <td>{{ delivery.status }}</td>
+          <td>
+            {% if delivery.status == 'assigned' %}
+              <form method="post" action="{% url 'driver_update_status' delivery.id %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="next_status" value="in_transit">
+                <button type="submit" class="btn-status">Mark In Transit</button>
+              </form>
+            {% elif delivery.status == 'in_transit' %}
+              <form method="post" action="{% url 'driver_update_status' delivery.id %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="next_status" value="delivered">
+                <button type="submit" class="btn-complete">Mark Delivered</button>
+              </form>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p>You haven’t accepted any deliveries yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Accepted Deliveries</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f9c8ff, #ffe58e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #a600bf;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #ffe1ff;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fff5ff;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      background-color: #a600bf;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background-color: #8c00a9;
+    }
+
+    .status {
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .no-deliveries {
+      color: #555;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Accepted Deliveries</h1>
+
+    {% if deliveries %}
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Pickup</th>
+        <th>Dropoff</th>
+        <th>Note</th>
+        <th>Status</th>
+        <th>Created</th>
+      </tr>
+      {% for delivery in deliveries %}
+      <tr>
+        <td>{{ delivery.id }}</td>
+        <td>{{ delivery.customer.username }}</td>
+        <td>{{ delivery.pickup_address }}</td>
+        <td>{{ delivery.dropoff_address }}</td>
+        <td>{{ delivery.package_note|default:"—" }}</td>
+        <td class="status">{{ delivery.status }}</td>
+        <td>{{ delivery.created_at|date:"Y-m-d H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p class="no-deliveries">You haven’t accepted any deliveries yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

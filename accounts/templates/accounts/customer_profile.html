@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Profile</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f9c8ff, #ffe58e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      color: #a600bf;
+      margin-bottom: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #ffe1ff;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fff5ff;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      background-color: #a600bf;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: #8c00a9;
+    }
+
+    .status {
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .no-deliveries {
+      color: #777;
+      margin-top: 20px;
+    }
+    .edit-btn {
+  display: inline-block;
+  background-color: #a600bf;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.edit-btn:hover {
+  background-color: #a600bf;
+  transform: translateY(-2px);
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome, {{ user.username }} 👋</h1>
+    <a href="{% url 'edit_profile' %}" class="edit-btn">Edit Profile</a>
+    {% if deliveries %}
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Driver</th>
+          <th>Pickup</th>
+          <th>Dropoff</th>
+          <th>Status</th>
+          <th>Feedback</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for delivery in deliveries %}
+        <tr>
+          <td>{{ delivery.id }}</td>
+          <td>{{ delivery.driver.username }}</td>
+          <td>{{ delivery.pickup_address }}</td>
+          <td>{{ delivery.dropoff_address }}</td>
+          <td class="status">{{ delivery.status }}</td>
+          <td>
+            {% if delivery.status == "Delivered" %}
+              {% if delivery.feedback %}
+                ⭐ {{ delivery.feedback.rating }}<br>
+                <small>{{ delivery.feedback.comment }}</small>
+              {% else %}
+                <a href="{% url 'give_feedback' delivery.id %}" class="btn">Give Feedback</a>
+              {% endif %}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p class="no-deliveries">You have not created any deliveries yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

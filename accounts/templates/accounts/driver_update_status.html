@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><title>Update Status</title>
+  <style>
+    body{
+      font-family:Segoe UI;
+      background:linear-gradient(135deg,#f9c8ff,#ffe58e);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      margin:0
+    }
+    .card{
+      background:#fff;
+      padding:30px 40px;
+      border-radius:15px;
+      box-shadow:0 8px 16px rgba(0,0,0,.15);
+      width:350px
+    }
+    h2{
+      color:#a600bf;
+      margin-top:0
+    }
+    select,button{
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      margin-top:10px
+    }
+    button{
+      background:#a600bf;
+      color:#fff;
+      border:none;
+      cursor:pointer
+    }
+    button:hover{
+      background:#8c00a9
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Delivery #{{ delivery.id }}</h2>
+    <p><strong>Current&nbsp;Status:</strong> {{ delivery.status|title }}</p>
+    {% if form.fields.status.choices %}
+    <form method="post">
+      {% csrf_token %}
+      {{ form.status }}
+      <button type="submit">Set to {{ form.fields.status.choices.0.1 }}</button>
+    </form>
+    {% else %}
+      <p>This delivery is already <b>Delivered</b>.</p>
+    {% endif %}
+    <a href="{% url 'accepted_deliveries' %}">← Back</a>
+  </div>
+</body>
+</html>
